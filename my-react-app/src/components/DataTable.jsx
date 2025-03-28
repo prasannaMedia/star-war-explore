@@ -23,13 +23,12 @@ const DataTable = ({ data, page, loading }) => {
 
   const handleLinkClick = (url) => {
     const [, entity, id] = url.split("/").filter(Boolean).slice(-3);
-    console.log(page, "1");
     navigate(`/details/${entity}/${id}/`);
   };
 
   return (
     <div className="overflow-x-auto mt-8">
-      <table className="w-full  mx-auto border-collapse border border-gray-300 rounded-lg shadow-lg">
+      <table className="w-full mx-auto border-collapse border border-gray-300 rounded-lg shadow-lg">
         <thead className="bg-gray-800 text-white">
           <tr>
             {headers.map((header) => (
@@ -40,7 +39,7 @@ const DataTable = ({ data, page, loading }) => {
             <th className="py-3 px-4">DETAILS</th>
           </tr>
         </thead>
-        <tbody >
+        <tbody>
           {loading ? (
             <tr>
               <td colSpan={headers.length + 1} className="text-center py-4">

@@ -1,15 +1,19 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const SearchBar = ({ setSearchQuery }) => {
-  const [query, setQuery] = useState('');
+const SearchBar = ({ setSearchQuery ,setPage,query, setQuery}) => {
 
   useEffect(() => {
     const handler = setTimeout(() => {
       setSearchQuery(query);
-    }, 100);
+    }, 500);
 
     return () => clearTimeout(handler);
   }, [query, setSearchQuery]);
+
+  const onChange= (e) => {
+    setQuery(e.target.value);
+    setPage(1); 
+  };
 
   return (
     <div className="mt-4">
@@ -17,7 +21,7 @@ const SearchBar = ({ setSearchQuery }) => {
         type="text"
         value={query}
         placeholder="Search..."
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={onChange}
         className="w-72 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
     </div>

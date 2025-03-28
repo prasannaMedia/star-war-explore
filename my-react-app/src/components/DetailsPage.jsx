@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import Loader from "./Loader";
 
 const DetailsPage = () => {
   const { entity, id } = useParams();
@@ -47,7 +48,7 @@ const DetailsPage = () => {
     });
   };
 
-  if (!data) return <p className="text-center mt-10">Loading...</p>;
+  if (!data) return <Loader />;
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">

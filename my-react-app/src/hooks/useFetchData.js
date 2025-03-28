@@ -1,38 +1,42 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
-const useFetchData = (endpoint, query = '') => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+const SWAPI_BASE_URL = "https://swapi.dev/api";
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const searchParam = query ? `search=${query}` : `page=${page}`;
-      const url = `https://swapi.dev/api/${endpoint}/?${searchParam}`;
-      
-      const response = await fetch(url);
-      if (!response.ok) throw new Error('Failed to fetch data');
-
-      const result = await response.json();
-      console.log('Fetched Data:', result);
-
-      setData(result.results || []);
-      setTotalPages(Math.ceil((result.count || 0) / 10)); 
-    } catch (err) {
-      setError(err);
-    } finally {
-      setLoading(false);
+const useFetchData = (endpoint, searchQuery = "", page = 1) => {
+  const fetchEntities = async () => {
+    if (searchQuery) {
+      const response = await axios.get(`${SWAPI_BASE_URL}/${endpoint}/?search=${searchQuery}`);
+      return response.data;
     }
+    const response = await axios.get(`${SWAPI_BASE_URL}/${endpoint}/?page=${page}`);
+    return response.data;
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [endpoint, query, page]);
+  const { 
+    data, 
+    isLoading, 
+    error, 
+    isPreviousData 
+  } = useQuery({
+    queryKey: ["entities", endpoint, searchQuery, page], 
+    queryFn: () => fetchEntities(),
+    keepPreviousData: true,
+    staleTime: 5000,
+    gcTime: 10 * 60 * 1000, // 10 minutes
+  });
 
-  return { data, loading, error, page, setPage, totalPages };
+  const totalPages = searchQuery 
+    ? Math.ceil(data?.count / 10) 
+    : Math.ceil((data?.count || 0) / 10);
+
+  return {
+    data: data?.results || [],
+    loading: isLoading || isPreviousData,
+    error,
+    page, 
+    totalPages
+  };
 };
 
 export default useFetchData;
