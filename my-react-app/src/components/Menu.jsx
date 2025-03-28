@@ -1,9 +1,10 @@
 import React from 'react';
 import { API_ENDPOINTS } from '../constants/api';
+import { useNavigate } from 'react-router-dom';
 
-const Menu = ({ selectedMenu, setSelectedMenu ,setPage}) => {
+const Menu = ({ selectedMenu, setSelectedMenu, setPage }) => {
+  const navigate = useNavigate();
   const menuItems = Object.keys(API_ENDPOINTS);
-
 
   return (
     <nav>
@@ -11,15 +12,10 @@ const Menu = ({ selectedMenu, setSelectedMenu ,setPage}) => {
         <button
           key={item}
           onClick={() => {
-            setPage(1)
+            setPage(1);
             window.history.replaceState({}, document.title);
-
             setSelectedMenu(item);
-
-            return () => {
-              navigate(location.pathname, { replace: true, state: null });
-            };
-
+            navigate(location.pathname);
           }}
           style={{
             marginRight: '10px',
